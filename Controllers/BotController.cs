@@ -26,7 +26,7 @@ namespace vNextBot.Controllers
             Bot = bot;
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost, HttpGet, HttpOptions]
         public async Task PostAsync()
         {
             // Delegate the processing of the HTTP POST to the adapter.

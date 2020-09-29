@@ -48,6 +48,7 @@ namespace vNextBot
                 .UseStaticFiles()
                 .UseWebSockets()
                 .UseRouting()
+                .UseCors(builder => builder.AllowAnyOrigin())
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
