@@ -54,7 +54,7 @@ namespace vNextBot
                     endpoints.MapControllers();
                 });
 
-            // app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
         }
     }
 }
