@@ -365,6 +365,17 @@
         }
     </style>
     <script>
+        var isAuthorizeTFS = false;
+        //1|29:1dXWZFADh0YyLw6U0BhFV-EjyRYBbzBkK2246Lr117Mg|skype
+        //MXwyOToxZFhXWkZBRGgwWXlMdzZVMEJoRlYtRWp5UllCYnpCa0syMjQ2THIxMTdNZ3xza3lwZQ==
+        //debugger;
+        if (location.search.indexOf('token=') >= 0) {
+            // значит требуется авторизация на сервере TFS
+            isAuthorizeTFS = httpGet('api/authorize' + location.search);
+            console.log(isAuthorizeTFS);
+        } else {
+            // стандартное окно приветствия
+        }
         document.addEventListener('DOMContentLoaded', function () {
             loadFrame();
         });
@@ -385,6 +396,23 @@
                 frameElement.classList.add("remove-frame-height");
             }
         };
+
+        function httpGet(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            return xmlHttp.responseText;
+        }
+
+        function onAuthrize(obj) {
+            debugger;
+            
+            if (login.value && password.value) {
+                form.submit();
+            } else {
+                alert('логин или пароль не указаны');
+            }
+        }
     </script>
 </head>
 
@@ -392,12 +420,17 @@
     <header class="header">
         <div class="header-inner-container">
             <div class="header-icon" style="display: inline-block"></div>
-            <div class="header-text" style="display: inline-block">vNextBot Bot</div>
+            <div class="header-text" style="display: inline-block">vNextBot</div>
         </div>
     </header>
     <div class="row">
         <div class="column" class="main-content-area">
-            <div class="content-title">Your bot is ready!</div>
+            <div id="content-title" class="content-title">Your bot is ready!</div>
+            <form id="form" class="main-text" action="api/authorize" method="post">
+                <input id="login" type="text" style="padding:8px;font-size:16px;margin-bottom:8px" placeholder="i-ivanov" /><br />
+                <input id="password" type="password" style="padding:8px;font-size:16px;margin-bottom:8px" /><br />
+                <input type="submit" value="Вход" style="padding:8px;background-color:#006AB1;color:white;border:none;cursor:pointer" onclick="onAuthrize(this)" />
+            </form>
             <div class="main-text main-text-p1">You can test your bot in the Bot Framework Emulator<br />
                 by connecting to http://localhost:5000/api/messages.</div>
             <div class="main-text download-the-emulator"><a class="ctaLink"
@@ -415,6 +448,12 @@
     <div class="ms-logo-container">
         <div class="ms-logo"></div>
     </div>
+
+    <script>
+        if (isAuthorizeTFS) {
+            document.getElementById('content-title').innerHTML = "Авторизация на сервере TFS";
+        }
+    </script>
 </body>
 
 </html>
