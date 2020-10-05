@@ -65,8 +65,10 @@ namespace vNextBot.Bots
                         }
                     }
                 }
-
-                await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                Activity activity = MessageFactory.Text(replyText);
+                activity.SetLocale("ru-RU");
+                
+                await turnContext.SendActivityAsync(activity, cancellationToken);
             }
             
         }
