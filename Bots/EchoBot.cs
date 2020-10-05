@@ -24,13 +24,13 @@ namespace vNextBot.Bots
                 var urlSetting = db.Settings.FirstOrDefault(t => t.c_key == "C_URL");
 
                 BotChannelIdentity identity = turnContext.Activity.GetIdentity();
-                string replyText = "Результат известен, но обработчик не найден.";
+                string replyText = "Р РµР·СѓР»СЊС‚Р°С‚ РёР·РІРµСЃС‚РµРЅ, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РЅР°Р№РґРµРЅ.";
                 if (identity.IsAuthenticated)
                 {
                     var answer = db.Search(turnContext.Activity.Text);
                     if (answer == null)
                     {
-                        replyText = "Нет информации по Вашему запрос, попробуйте перестроить и повторить заново.";
+                        replyText = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё РїРѕ Р’Р°С€РµРјСѓ Р·Р°РїСЂРѕСЃ, РїРѕРїСЂРѕР±СѓР№С‚Рµ РїРµСЂРµСЃС‚СЂРѕРёС‚СЊ Рё РїРѕРІС‚РѕСЂРёС‚СЊ Р·Р°РЅРѕРІРѕ.";
                     }
                     else
                     {
@@ -44,7 +44,7 @@ namespace vNextBot.Bots
                     var setting = db.Settings.FirstOrDefault(t => t.c_key == "C_BOT_URL");
                     if (identity.IsActive)
                     {        
-                        replyText = "Для завершения регистрации требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                        replyText = "Р”Р»СЏ Р·Р°РІРµСЂС€РµРЅРёСЏ СЂРµРіРёСЃС‚СЂР°С†РёРё С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµР№С‚Рё РїРѕ <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">СЃСЃС‹Р»РєРµ</a>.";
                     } else
                     {
                         Regex regex = new Regex(@"^\d{6}$");
@@ -56,12 +56,12 @@ namespace vNextBot.Bots
                                 identity.UpdateIdentity(turnContext.Activity);
 
                                 //1|29:1dXWZFADh0YyLw6U0BhFV-EjyRYBbzBkK2246Lr117Mg|skype
-                                replyText = "Спасибо! Ключ принят.<br />Теперь можно выполнить авторизоваться на сервере TFS. Для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                                replyText = "РЎРїР°СЃРёР±Рѕ! РљР»СЋС‡ РїСЂРёРЅСЏС‚.<br />РўРµРїРµСЂСЊ РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РЅР° СЃРµСЂРІРµСЂРµ TFS. Р”Р»СЏ СЌС‚РѕРіРѕ С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµР№С‚Рё РїРѕ <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">СЃСЃС‹Р»РєРµ</a>.";
                             }
                         }
                         else
                         {
-                            replyText = "Привет! Нам нужно познакомиться.<br />Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в моей базе данных.<br />Отправь мне ключ для своей идентификации.";
+                            replyText = "РџСЂРёРІРµС‚! РќР°Рј РЅСѓР¶РЅРѕ РїРѕР·РЅР°РєРѕРјРёС‚СЊСЃСЏ.<br />РРЅС„РѕСЂРјР°С†РёСЏ Рѕ <b>" + turnContext.Activity.From.Name + "</b> РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РјРѕРµР№ Р±Р°Р·Рµ РґР°РЅРЅС‹С….<br />РћС‚РїСЂР°РІСЊ РјРЅРµ РєР»СЋС‡ РґР»СЏ СЃРІРѕРµР№ РёРґРµРЅС‚РёС„РёРєР°С†РёРё.";
                         }
                     }
                 }
