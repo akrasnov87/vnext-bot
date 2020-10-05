@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>vNextBot</title>
+    <title>vNext Bot</title>
     <style>
         body {
             margin: 0px;
@@ -88,113 +88,6 @@
             line-height: 32px;
         }
 
-        .main-text-p1 {
-            padding-top: 48px;
-            padding-bottom: 28px;
-        }
-
-        .endpoint {
-            height: 32px;
-            width: 571px;
-            color: #808080;
-            font-family: "Segoe UI";
-            font-size: 24px;
-            font-weight: 200;
-            line-height: 32px;
-            padding-top: 28px;
-        }
-
-        .how-to-build-section {
-            padding-top: 20px;
-            padding-left: 30px;
-        }
-
-        .how-to-build-section>h3 {
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 0.35px;
-            line-height: 22px;
-            margin: 0 0 24px 0;
-            text-transform: uppercase;
-        }
-
-        .step-container {
-            display: flex;
-            align-items: stretch;
-            position: relative;
-        }
-
-        .step-container dl {
-            border-left: 1px solid #A0A0A0;
-            display: block;
-            padding: 0 24px;
-            margin: 0;
-        }
-
-        .step-container dl>dt::before {
-            background-color: white;
-            border: 1px solid #A0A0A0;
-            border-radius: 100%;
-            content: '';
-            left: 47px;
-            height: 11px;
-            position: absolute;
-            width: 11px;
-        }
-
-        .step-container dl>.test-bullet::before {
-            background-color: blue;
-        }
-
-        .step-container dl>dt {
-            display: block;
-            font-size: inherit;
-            font-weight: bold;
-            line-height: 20px;
-        }
-
-        .step-container dl>dd {
-            font-size: inherit;
-            line-height: 20px;
-            margin-left: 0;
-            padding-bottom: 32px;
-        }
-
-        .step-container:last-child dl {
-            border-left: 1px solid transparent;
-        }
-
-        .ctaLink {
-            background-color: transparent;
-            border: 1px solid transparent;
-            color: #006AB1;
-            cursor: pointer;
-            font-weight: 600;
-            padding: 0;
-            white-space: normal;
-        }
-
-        .ctaLink:focus {
-            outline: 1px solid #00bcf2;
-        }
-
-        .ctaLink:hover {
-            text-decoration: underline;
-        }
-
-        .step-icon {
-            display: flex;
-            height: 38px;
-            margin-right: 15px;
-            width: 38px;
-        }
-
-        .step-icon>div {
-            height: 30px;
-            width: 30px;
-            background-repeat: no-repeat;
-        }
-
         .ms-logo-container {
             min-width: 580px;
             max-width: 980px;
@@ -238,24 +131,6 @@
 
         a {
             text-decoration: none;
-        }
-
-        .download-the-emulator {
-            height: 20px;
-            color: #0063B1;
-            font-size: 15px;
-            line-height: 20px;
-            padding-bottom: 70px;
-        }
-
-        .how-to-iframe {
-            max-width: 700px !important;
-            min-width: 650px !important;
-            height: 700px !important;
-        }
-
-        .remove-frame-height {
-            height: 10px;
         }
 
         @media only screen and (max-width: 1300px) {
@@ -331,16 +206,8 @@
                 min-width: 410px !important;
             }
 
-            .endpoint {
-                font-size: 25px;
-            }
-
             .main-text {
                 font-size: 20px;
-            }
-
-            .step-container dl>dd {
-                font-size: 14px;
             }
 
             .column {
@@ -351,24 +218,12 @@
                 height: 110px;
                 width: 110px;
             }
-
-            .how-to-iframe {
-                max-width: 480px !important;
-                min-width: 400px !important;
-                height: 650px !important;
-                overflow: hidden;
-            }
-        }
-
-        .remove-frame-height {
-            max-height: 10px;
         }
     </style>
     <script>
         var isAuthorizeTFS = false;
         //1|29:1dXWZFADh0YyLw6U0BhFV-EjyRYBbzBkK2246Lr117Mg|skype
         //MXwyOToxZFhXWkZBRGgwWXlMdzZVMEJoRlYtRWp5UllCYnpCa0syMjQ2THIxMTdNZ3xza3lwZQ==
-        //debugger;
         if (location.search.indexOf('token=') >= 0) {
             // значит требуется авторизация на сервере TFS
             isAuthorizeTFS = httpGet('api/authorize' + location.search);
@@ -376,26 +231,6 @@
         } else {
             // стандартное окно приветствия
         }
-        document.addEventListener('DOMContentLoaded', function () {
-            loadFrame();
-        });
-        var loadFrame = function () {
-            var iframe = document.createElement('iframe');
-            iframe.setAttribute("id", "iframe");
-            var offLineHTMLContent = "";
-            var frameElement = document.getElementById("how-to-iframe");
-            if (window.navigator.onLine) {
-                iframe.src = 'https://docs.botframework.com/static/abs/pages/f5.htm';
-                iframe.setAttribute("scrolling", "no");
-                iframe.setAttribute("frameborder", "0");
-                iframe.setAttribute("width", "100%");
-                iframe.setAttribute("height", "100%");
-                var frameDiv = document.getElementById("how-to-iframe");
-                frameDiv.appendChild(iframe);
-            } else {
-                frameElement.classList.add("remove-frame-height");
-            }
-        };
 
         function httpGet(theUrl) {
             var xmlHttp = new XMLHttpRequest();
@@ -405,8 +240,6 @@
         }
 
         function onAuthrize(obj) {
-            debugger;
-            
             if (login.value && password.value) {
                 form.submit();
             } else {
@@ -420,38 +253,46 @@
     <header class="header">
         <div class="header-inner-container">
             <div class="header-icon" style="display: inline-block"></div>
-            <div class="header-text" style="display: inline-block">vNextBot</div>
+            <div class="header-text" style="display: inline-block">vNext Bot</div>
         </div>
     </header>
     <div class="row">
         <div class="column" class="main-content-area">
             <div id="content-title" class="content-title">Your bot is ready!</div>
             <form id="form" class="main-text" action="api/authorize" method="post">
-                <input id="login" type="text" style="padding:8px;font-size:16px;margin-bottom:8px" placeholder="i-ivanov" /><br />
-                <input id="password" type="password" style="padding:8px;font-size:16px;margin-bottom:8px" /><br />
+                <input id="token" name="token" type="hidden" />
+                <input id="login" name="login" type="text" style="padding:8px;font-size:16px;margin-bottom:8px" placeholder="i-ivanov" /><br />
+                <input id="password" name="password" type="password" style="padding:8px;font-size:16px;margin-bottom:8px" /><br />
                 <input type="submit" value="Вход" style="padding:8px;background-color:#006AB1;color:white;border:none;cursor:pointer" onclick="onAuthrize(this)" />
             </form>
-            <div class="main-text main-text-p1">You can test your bot in the Bot Framework Emulator<br />
-                by connecting to http://localhost:5000/api/messages.</div>
-            <div class="main-text download-the-emulator"><a class="ctaLink"
-                    href="https://aka.ms/bot-framework-F5-download-emulator" target="_blank">Download the Emulator</a>
-            </div>
-            <div class="main-text">Visit <a class="ctaLink" href="https://aka.ms/bot-framework-F5-abs-home"
-                    target="_blank">Azure
-                    Bot Service</a> to register your bot and add it to<br />
-                various channels. The bot's endpoint URL typically looks
-                like this:</div>
-            <div class="endpoint">https://<i>your_bots_hostname</i>/api/messages</div>
+            <div id="main-text" class="main-text"></div>
         </div>
-        <div class="column how-to-iframe" id="how-to-iframe"></div>
     </div>
     <div class="ms-logo-container">
         <div class="ms-logo"></div>
     </div>
 
     <script>
+        var description = "Чат-бот коменды vNext";
         if (isAuthorizeTFS) {
             document.getElementById('content-title').innerHTML = "Авторизация на сервере TFS";
+            token.value = location.search.indexOf('=') >= 0 ? location.search.substr(location.search.indexOf('=') + 1, location.search.length - (location.search.indexOf('=') + 1)) : '';
+            document.getElementById('main-text').innerHTML = "Для получения информации от TFS требуется доменная авторизация.";
+        } else {
+            document.getElementById('main-text').innerHTML = description;
+            document.getElementById('form').style.display = 'none';
+        }
+
+        if (location.search.indexOf('authorize=SUCCESS') >= 0) {
+            document.getElementById('content-title').innerHTML = "Авторизация выполнена";
+            document.getElementById('main-text').innerHTML = description;
+            document.getElementById('form').style.display = 'none';
+        }
+
+        if (location.search.indexOf('authorize=FAIL') >= 0) {
+            var txt = location.search.indexOf('txt=') >= 0 ? location.search.substr(location.search.indexOf('txt=') + 4, location.search.length - (location.search.indexOf('txt=') + 4)) : '';
+            document.getElementById('content-title').innerHTML = "Логин или пароль указаны неверно";
+            document.getElementById('main-text').innerHTML = txt.replace(/%20/gi, ' ');
         }
     </script>
 </body>
