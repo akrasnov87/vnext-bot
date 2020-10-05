@@ -11,6 +11,7 @@ namespace vNextBot.Bots
         public HttpResult(HttpStatusCode status)
         {
             Status = status;
+            Result = "Сервис не вернул результат.";
         }
         public string Result { get; set; }
         public HttpStatusCode Status { get; set; }

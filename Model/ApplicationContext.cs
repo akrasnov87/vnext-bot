@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using vNextBot.Bots;
@@ -39,7 +40,36 @@ namespace vNextBot.Model
             }
         }
 
-        public bool Registry(BotChannelIdentity identity, int pin)
+        public dynamic Search(string text)
+        {
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "dbo.cf_ui_fts";
+                command.Parameters.Add(new Npgsql.NpgsqlParameter("_c_query", NpgsqlTypes.NpgsqlDbType.Text)
+                { Value = text });
+                if (command.Connection.State == ConnectionState.Closed)
+                    command.Connection.Open();
+                DbDataReader dbDataReader = command.ExecuteReader();
+                if (dbDataReader.HasRows)
+                {
+                    while (dbDataReader.Read())
+                    {
+                        if (dbDataReader.GetString("c_action") == "API")
+                        {
+                            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data"));
+                            return new { 
+                               Action = dbDataReader.GetString("c_action"),
+                               Url = (string)data.url
+                            }; // string json = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data")).c_url;
+                        }
+                    }
+                }
+                return null; // "Нет информации по Вашему запрос, попробуйте перестроить и повторить заново.";
+            }
+        }
+
+        public bool Registry(BotChannelIdentity identity, int pin, string serviceUrl)
         {
             if(Users.Any(t=>t.n_pin == pin && t.b_disabled))
             {
@@ -49,6 +79,8 @@ namespace vNextBot.Model
                 {
                     user.c_fio = identity.Name;
                     user.b_disabled = false;
+                    user.c_service_url = serviceUrl;
+
                     Users.Update(user);
 
                     ChannelAccounts.Add(new MyChannelAccount()
@@ -62,6 +94,10 @@ namespace vNextBot.Model
                     SaveChanges();
                     return true;
                 }
+            } else if(Users.Any(t => t.n_pin == pin && !t.b_disabled))
+            {
+                // авторизован ранее
+                return true;
             }
 
             return false;

@@ -293,6 +293,9 @@
             var txt = location.search.indexOf('txt=') >= 0 ? location.search.substr(location.search.indexOf('txt=') + 4, location.search.length - (location.search.indexOf('txt=') + 4)) : '';
             document.getElementById('content-title').innerHTML = "Логин или пароль указаны неверно";
             document.getElementById('main-text').innerHTML = txt.replace(/%20/gi, ' ');
+            var start = location.search.indexOf('token=') + 6;
+            var end = location.search.indexOf('&', start);
+            document.getElementById('token').value = location.search.substr(start, end - start);
         }
     </script>
 </body>

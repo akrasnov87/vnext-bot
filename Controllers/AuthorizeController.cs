@@ -35,7 +35,7 @@ namespace vNextBot.Controllers
         }
 
         [HttpPost]
-        public RedirectResult Post()
+        public async Task<RedirectResult> Post()
         {
             if(HttpContext.Request.Form.Count() == 3)
             {
@@ -71,13 +71,18 @@ namespace vNextBot.Controllers
                     {
                         user.c_login = login;
                         user.c_password = Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
+                        user.b_authorize = true;
+
                         db.Users.Update(user);
                         db.SaveChanges();
+
+                        await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "Спасибо, регистрация завершена!");
                     } else
                     {
+                        user.b_authorize = false;
                         return Redirect("~/?token=" + token + "&authorize=FAIL&txt=The user was not logged in to the server");
                     }
-                } 
+                }
 
                 return Redirect("~/?authorize=SUCCESS");
             }

@@ -22,5 +22,7 @@ namespace vNextBot.Model
         public Guid? project_id { get; set; }
         public string c_domain { get; set; }
         public int n_pin { get; set; }
+        public bool b_authorize { get; set; }
+        public string c_service_url { get; set; }
     }
 }
