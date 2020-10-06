@@ -24,5 +24,7 @@ namespace vNextBot.Model
         public int n_pin { get; set; }
         public bool b_authorize { get; set; }
         public string c_service_url { get; set; }
+        public string c_team { get; set; }
+        public Guid? team_id { get; set; }
     }
 }

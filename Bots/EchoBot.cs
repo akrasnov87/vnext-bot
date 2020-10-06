@@ -19,32 +19,44 @@ namespace vNextBot.Bots
     {
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            using(ApplicationContext db = new ApplicationContext())
+            await turnContext.SendActivityAsync(new Activity { Type = ActivityTypes.Typing }, cancellationToken);
+
+            using (ApplicationContext db = new ApplicationContext())
             {
                 var urlSetting = db.Settings.FirstOrDefault(t => t.c_key == "C_URL");
 
                 BotChannelIdentity identity = turnContext.Activity.GetIdentity();
                 string replyText = "Результат известен, но обработчик не найден.";
+                var setting = db.Settings.FirstOrDefault(t => t.c_key == "C_BOT_URL");
                 if (identity.IsAuthenticated)
                 {
                     var answer = db.Search(turnContext.Activity.Text);
                     if (answer == null)
                     {
-                        replyText = "Нет информации по Вашему запрос, попробуйте перестроить и повторить заново.";
+                        replyText = "Нет информации, попробуйте сформулировать запрос иначе.";
                     }
                     else
                     {
+                        HttpResult httpResult = null;
                         if (answer.Action == "API") {
-                            replyText = BotExtension.Get(urlSetting.c_value + answer.Url, identity.TfsToken).Result;
+                            httpResult = BotExtension.Get(urlSetting.c_value + answer.Url, identity.TfsToken);
+                        }
+
+                        if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
+                        {
+                            replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и повторить авторизацию на сервере TFS.";
+                        }
+                        else
+                        {
+                            replyText = httpResult.Result;
                         }
                     }
                 }
                 else
                 {
-                    var setting = db.Settings.FirstOrDefault(t => t.c_key == "C_BOT_URL");
                     if (identity.IsActive)
                     {        
-                        replyText = "Для завершения регистрации требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                        replyText = "Для продолжения работы нужно перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и выполнить авторизацию.";
                     } else
                     {
                         Regex regex = new Regex(@"^\d{6}$");
@@ -55,13 +67,10 @@ namespace vNextBot.Bots
                             {
                                 identity.UpdateIdentity(turnContext.Activity);
 
-                                //1|29:1dXWZFADh0YyLw6U0BhFV-EjyRYBbzBkK2246Lr117Mg|skype
-                                replyText = "Спасибо! Ключ принят.<br />Теперь можно выполнить авторизоваться на сервере TFS. Для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                                replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
                             }
-                        }
-                        else
-                        {
-                            replyText = "Привет! Нам нужно познакомиться.<br />Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в моей базе данных.<br />Отправь мне ключ для своей идентификации.";
+                        } else {
+                            replyText = "Здравствуйте! Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в базе данных.<br />Для начала регистрации требуется отправь ключ.";
                         }
                     }
                 }
@@ -73,7 +82,7 @@ namespace vNextBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            var welcomeText = "Hello and welcome!";
+            var welcomeText = "Приветствую! Я чат-бот команды <b>vNext</b>.<br />Моя основная задача оптимизировать работу с TFS.";
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)

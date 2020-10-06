@@ -61,7 +61,7 @@ namespace vNextBot.Model
                             return new { 
                                Action = dbDataReader.GetString("c_action"),
                                Url = (string)data.url
-                            }; // string json = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data")).c_url;
+                            };
                         }
                     }
                 }
