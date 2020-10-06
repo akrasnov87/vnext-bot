@@ -66,17 +66,23 @@ namespace vNextBot.Controllers
 
                     var tfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}", tfsUrl, user.c_project, user.c_domain, login, password)));
 
-                    var httpResult = BotExtension.Get(string.Format("{0}/v1/projects", setting.c_value), tfsToken);
-                    if(httpResult.IsAuthorize)
-                    {
+                    var httpResult = BotExtension.Get(string.Format("{0}/v1/projects", setting.c_value), tfsToken, "application/json");
+                    if(httpResult.IsAuthorize) {
                         user.c_login = login;
                         user.c_password = Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
                         user.b_authorize = true;
+                        var projectItem = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(httpResult.Result);
+                        user.c_project = projectItem.name;
+                        user.project_id = Guid.Parse((string)projectItem.id);
 
                         db.Users.Update(user);
                         db.SaveChanges();
 
-                        await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "Спасибо, регистрация завершена!");
+                        await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "В какой команде Вы находитесь?");
+
+                        //await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "Спасибо, регистрация завершена!");
+                        // тут нужно получить идентификатор проекта
+
                     } else
                     {
                         user.b_authorize = false;

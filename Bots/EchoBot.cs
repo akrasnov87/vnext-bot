@@ -30,26 +30,34 @@ namespace vNextBot.Bots
                 var setting = db.Settings.FirstOrDefault(t => t.c_key == "C_BOT_URL");
                 if (identity.IsAuthenticated)
                 {
-                    var answer = db.Search(turnContext.Activity.Text);
-                    if (answer == null)
+                    if (identity.DbUser.team_id.HasValue)
                     {
-                        replyText = "Нет информации, попробуйте сформулировать запрос иначе.";
-                    }
-                    else
-                    {
-                        HttpResult httpResult = null;
-                        if (answer.Action == "API") {
-                            httpResult = BotExtension.Get(urlSetting.c_value + answer.Url, identity.TfsToken);
-                        }
-
-                        if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
+                        var answer = db.Search(turnContext.Activity.Text);
+                        if (answer == null)
                         {
-                            replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и повторить авторизацию на сервере TFS.";
+                            replyText = "Нет информации, попробуйте сформулировать запрос иначе.";
                         }
                         else
                         {
-                            replyText = httpResult.Result;
+                            HttpResult httpResult = null;
+                            if (answer.Action == "API")
+                            {
+                                httpResult = BotExtension.Get(urlSetting.c_value + answer.Url, identity.TfsToken, "text/plain");
+                            }
+
+                            if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
+                            {
+                                replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и повторить авторизацию на сервере TFS.";
+                            }
+                            else
+                            {
+                                replyText = httpResult.Result;
+                            }
                         }
+                    }
+                    else
+                    {
+                        string teamName = turnContext.Activity.Text;
                     }
                 }
                 else

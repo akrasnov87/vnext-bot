@@ -48,7 +48,10 @@ namespace vNextBot.Bots
                             var base64EncodedBytes = Convert.FromBase64String(DbUser.c_password);
                             string password = Encoding.UTF8.GetString(base64EncodedBytes);
 
-                            TfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}", setting.c_value, DbUser.c_project, DbUser.c_domain, DbUser.c_login, password)));
+                            string project_id = DbUser.project_id.HasValue ? DbUser.project_id.Value.ToString() : "";
+                            string team_id = DbUser.team_id.HasValue ? DbUser.team_id.Value.ToString() : "";
+
+                            TfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", setting.c_value, DbUser.c_project, DbUser.c_domain, DbUser.c_login, password, project_id, team_id)));
                         }
                     }
                 }

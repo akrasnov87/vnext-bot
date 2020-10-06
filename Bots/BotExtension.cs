@@ -21,10 +21,11 @@ namespace vNextBot.Bots
             return new BotChannelIdentity(activity);
         }
 
-        public static HttpResult Get(string uri, string token)
+        public static HttpResult Get(string uri, string token, string type)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Headers.Add("Authorization", "TFS " + token);
+            request.Headers.Add("Content-Type", type);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
             try
