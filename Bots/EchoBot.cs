@@ -12,6 +12,7 @@ using Microsoft.Bot.Schema;
 using vNextBot.Model;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace vNextBot.Bots
 {
@@ -42,7 +43,8 @@ namespace vNextBot.Bots
                             HttpResult httpResult = null;
                             if (answer.Action == "API")
                             {
-                                httpResult = BotExtension.Get(urlSetting.c_value + answer.Url, identity.TfsToken, "text/plain");
+                                string tfsUrl = urlSetting.c_value + answer.Url;
+                                httpResult = BotExtension.Get(tfsUrl, identity.TfsToken, "text/plain");
                             }
 
                             if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
@@ -58,6 +60,20 @@ namespace vNextBot.Bots
                     else
                     {
                         string teamName = turnContext.Activity.Text;
+                        var httpResult = BotExtension.Get(string.Format("{0}/v1/teams/" + teamName, urlSetting.c_value), identity.TfsToken, "application/json");
+                        if (httpResult.Result != "null")
+                        {
+                            var team = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(httpResult.Result);
+                            identity.DbUser.c_team = team.name;
+                            identity.DbUser.team_id = Guid.Parse((string)team.id);
+                            db.Update(identity.DbUser);
+                            db.SaveChanges();
+                            replyText = "Спасибо, регистрация завершена!<br />Вы в проекте <b>" + identity.DbUser.c_project + "</b> и Ваша команде <b>" + identity.DbUser.c_team + "</b>.";
+                        }
+                        else
+                        {
+                            replyText = string.Format("Команда {0} не найден. Повторите запрос еще раз.", teamName);
+                        }
                     }
                 }
                 else

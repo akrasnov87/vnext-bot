@@ -64,7 +64,7 @@ namespace vNextBot.Controllers
                         return Redirect("~/?authorize=FAIL&txt=No matches found in the database");
                     }
 
-                    var tfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}", tfsUrl, user.c_project, user.c_domain, login, password)));
+                    var tfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", tfsUrl, user.c_project, user.c_domain, login, password, "", "")));
 
                     var httpResult = BotExtension.Get(string.Format("{0}/v1/projects", setting.c_value), tfsToken, "application/json");
                     if(httpResult.IsAuthorize) {
@@ -74,15 +74,20 @@ namespace vNextBot.Controllers
                         var projectItem = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(httpResult.Result);
                         user.c_project = projectItem.name;
                         user.project_id = Guid.Parse((string)projectItem.id);
-
+                        tfsToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}", tfsUrl, user.c_project, user.c_domain, login, password, user.project_id.ToString(), "")));
+                        
                         db.Users.Update(user);
                         db.SaveChanges();
 
-                        await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "В какой команде Вы находитесь?");
-
-                        //await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "Спасибо, регистрация завершена!");
-                        // тут нужно получить идентификатор проекта
-
+                        httpResult = BotExtension.Get(string.Format("{0}/v1/teams", setting.c_value), tfsToken, "text/plain");
+                        if (httpResult.IsAuthorize)
+                        {
+                            await BotExtension.SendMessageAsync(parts[3], parts[4], parts[6], parts[5], "Регистрация в TFS завершена.<br />Укажите в какой команде в находитесь?<br /><br />" + httpResult.Result);
+                        } else
+                        {
+                            user.b_authorize = false;
+                            return Redirect("~/?token=" + token + "&authorize=FAIL&txt=The user was not logged in to the server");
+                        }
                     } else
                     {
                         user.b_authorize = false;
