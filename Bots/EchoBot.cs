@@ -26,14 +26,14 @@ namespace vNextBot.Bots
                 var urlSetting = db.Settings.FirstOrDefault(t => t.c_key == "C_URL");
 
                 BotChannelIdentity identity = turnContext.Activity.GetIdentity();
-                string replyText = "Результат известен, но обработчик не найден.";
+                string replyText = "Р РµР·СѓР»СЊС‚Р°С‚ РёР·РІРµСЃС‚РµРЅ, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РЅР°Р№РґРµРЅ.";
                 var setting = db.Settings.FirstOrDefault(t => t.c_key == "C_BOT_URL");
                 if (identity.IsAuthenticated)
                 {
                     var answer = db.Search(turnContext.Activity.Text);
                     if (answer == null)
                     {
-                        replyText = "Нет информации, попробуйте сформулировать запрос иначе.";
+                        replyText = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё, РїРѕРїСЂРѕР±СѓР№С‚Рµ СЃС„РѕСЂРјСѓР»РёСЂРѕРІР°С‚СЊ Р·Р°РїСЂРѕСЃ РёРЅР°С‡Рµ.";
                     }
                     else
                     {
@@ -44,7 +44,7 @@ namespace vNextBot.Bots
 
                         if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
                         {
-                            replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и повторить авторизацию на сервере TFS.";
+                            replyText = "Р”Р»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ СЂР°Р±РѕС‚С‹ С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµР№С‚Рё РїРѕ <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">СЃСЃС‹Р»РєРµ</a> Рё РїРѕРІС‚РѕСЂРёС‚СЊ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ РЅР° СЃРµСЂРІРµСЂРµ TFS.";
                         }
                         else
                         {
@@ -56,7 +56,7 @@ namespace vNextBot.Bots
                 {
                     if (identity.IsActive)
                     {        
-                        replyText = "Для продолжения работы нужно перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и выполнить авторизацию.";
+                        replyText = "Р”Р»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ СЂР°Р±РѕС‚С‹ РЅСѓР¶РЅРѕ РїРµСЂРµР№С‚Рё РїРѕ <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">СЃСЃС‹Р»РєРµ</a> Рё РІС‹РїРѕР»РЅРёС‚СЊ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ.";
                     } else
                     {
                         Regex regex = new Regex(@"^\d{6}$");
@@ -67,10 +67,10 @@ namespace vNextBot.Bots
                             {
                                 identity.UpdateIdentity(turnContext.Activity);
 
-                                replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                                replyText = "РЎРїР°СЃРёР±Рѕ! РљР»СЋС‡ РїСЂРёРЅСЏС‚.<br />РўРµРїРµСЂСЊ РЅСѓР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РЅР° СЃРµСЂРІРµСЂРµ TFS Рё РґР»СЏ СЌС‚РѕРіРѕ С‚СЂРµР±СѓРµС‚СЃСЏ РїРµСЂРµР№С‚Рё РїРѕ <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">СЃСЃС‹Р»РєРµ</a>.";
                             }
                         } else {
-                            replyText = "Здравствуйте! Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в базе данных.<br />Для начала регистрации требуется отправь ключ.";
+                            replyText = "Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ! РРЅС„РѕСЂРјР°С†РёСЏ Рѕ <b>" + turnContext.Activity.From.Name + "</b> РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С….<br />Р”Р»СЏ РЅР°С‡Р°Р»Р° СЂРµРіРёСЃС‚СЂР°С†РёРё С‚СЂРµР±СѓРµС‚СЃСЏ РѕС‚РїСЂР°РІСЊ РєР»СЋС‡.";
                         }
                     }
                 }
@@ -82,7 +82,7 @@ namespace vNextBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            var welcomeText = "Приветствую! Я чат-бот команды <b>vNext</b>.<br />Моя основная задача оптимизировать работу с TFS.";
+            var welcomeText = "РџСЂРёРІРµС‚СЃС‚РІСѓСЋ! РЇ С‡Р°С‚-Р±РѕС‚ РєРѕРјР°РЅРґС‹ <b>vNext</b>.<br />РњРѕСЏ РѕСЃРЅРѕРІРЅР°СЏ Р·Р°РґР°С‡Р° РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ СЂР°Р±РѕС‚Сѓ СЃ TFS.";
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
