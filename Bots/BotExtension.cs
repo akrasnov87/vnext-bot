@@ -21,6 +21,37 @@ namespace vNextBot.Bots
             return new BotChannelIdentity(activity);
         }
 
+        public static HttpResult Get(string uri, string type)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.Headers.Add("Content-Type", type);
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var httpResult = new HttpResult(response.StatusCode);
+                    httpResult.Result = reader.ReadToEnd();
+                    return httpResult;
+                }
+            }
+            catch (System.Net.WebException e)
+            {
+                if (e.Response != null)
+                {
+                    var response = (HttpWebResponse)e.Response;
+                    return new HttpResult(response.StatusCode);
+                }
+                else
+                {
+                    return new HttpResult(HttpStatusCode.BadRequest);
+                }
+            }
+        }
+
         public static HttpResult Get(string uri, string token, string type)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);

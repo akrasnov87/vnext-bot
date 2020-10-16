@@ -41,10 +41,41 @@ namespace vNextBot.Bots
                         else
                         {
                             HttpResult httpResult = null;
-                            if (answer.Action == "API")
+                            // получение информации от TFS
+                            if (answer.Action == "")
                             {
                                 string tfsUrl = urlSetting.c_value + answer.Url;
                                 httpResult = BotExtension.Get(tfsUrl, identity.TfsToken, "text/plain");
+                            }
+
+                            //получение информации от внешнего API
+                            if (answer.Action == "API")
+                            {
+                                string url = answer.Url;
+                                httpResult = BotExtension.Get(url, "text/plain");
+                            }
+
+                            if(answer.Action = "DOWNLOAD")
+                            {
+                                string url = answer.Url;
+                                string title = answer.Title;
+                                httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
+                                httpResult.Result = "Скачать можно по ссылке <a href=\"" + url + "\">" + title + "</a>";
+                            }
+
+                            if (answer.Action = "LINK")
+                            {
+                                string url = answer.Url;
+                                string title = answer.Title;
+                                httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
+                                httpResult.Result = "Информацию доступна по ссылке <a href=\"" + url + "\">" + title + "</a>";
+                            }
+
+                            if (answer.Action = "TEXT")
+                            {
+                                string title = answer.Title;
+                                httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
+                                httpResult.Result = title;
                             }
 
                             if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
@@ -94,7 +125,7 @@ namespace vNextBot.Bots
                                 replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
                             }
                         } else {
-                            replyText = "Здравствуйте! Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в базе данных.<br />Для начала регистрации требуется отправь ключ.";
+                            replyText = "Здравствуйте! Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в базе данных.<br />Для начала регистрации, требуется отправь ключ.";
                         }
                     }
                 }
