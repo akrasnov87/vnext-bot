@@ -48,6 +48,8 @@ namespace vNextBot.Model
                 command.CommandText = "dbo.cf_ui_fts";
                 command.Parameters.Add(new Npgsql.NpgsqlParameter("_c_query", NpgsqlTypes.NpgsqlDbType.Text)
                 { Value = text });
+                command.Parameters.Add(new Npgsql.NpgsqlParameter("_t_type", NpgsqlTypes.NpgsqlDbType.Integer)
+                { Value = 0 });
                 if (command.Connection.State == ConnectionState.Closed)
                     command.Connection.Open();
                 DbDataReader dbDataReader = command.ExecuteReader();
@@ -55,15 +57,13 @@ namespace vNextBot.Model
                 {
                     while (dbDataReader.Read())
                     {
-                        if (dbDataReader.GetString("c_action") == "API")
+                        var data = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data"));
+                        return new
                         {
-                            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data"));
-                            return new { 
-                               Action = dbDataReader.GetString("c_action"),
-                               Url = (string)data.url,
-                               Title = (string)data.title
-                            };
-                        }
+                            Action = dbDataReader.GetString("c_action"),
+                            Url = (string)data.url,
+                            Title = (string)data.title
+                        };
                     }
                 }
                 return null; // "Нет информации по Вашему запрос, попробуйте перестроить и повторить заново.";
