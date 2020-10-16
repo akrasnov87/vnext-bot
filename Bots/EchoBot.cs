@@ -55,7 +55,7 @@ namespace vNextBot.Bots
                                 httpResult = BotExtension.Get(url, "text/plain");
                             }
 
-                            if(answer.Action = "DOWNLOAD")
+                            if(answer.Action == "DOWNLOAD")
                             {
                                 string url = answer.Url;
                                 string title = answer.Title;
@@ -63,7 +63,7 @@ namespace vNextBot.Bots
                                 httpResult.Result = "Скачать можно по ссылке <a href=\"" + url + "\">" + title + "</a>";
                             }
 
-                            if (answer.Action = "LINK")
+                            if (answer.Action == "LINK")
                             {
                                 string url = answer.Url;
                                 string title = answer.Title;
@@ -71,7 +71,7 @@ namespace vNextBot.Bots
                                 httpResult.Result = "Информацию доступна по ссылке <a href=\"" + url + "\">" + title + "</a>";
                             }
 
-                            if (answer.Action = "TEXT")
+                            if (answer.Action == "TEXT")
                             {
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
