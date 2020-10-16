@@ -42,7 +42,7 @@ namespace vNextBot.Bots
                         {
                             HttpResult httpResult = null;
                             // получение информации от TFS
-                            if (answer.Action == "")
+                            if (answer.Action == "TFS_API")
                             {
                                 string tfsUrl = urlSetting.c_value + answer.Url;
                                 httpResult = BotExtension.Get(tfsUrl, identity.TfsToken, "text/plain");
@@ -76,6 +76,12 @@ namespace vNextBot.Bots
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
                                 httpResult.Result = title;
+                            }
+
+                            if(httpResult == null)
+                            {
+                                httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
+                                httpResult.Result = "Информация найден, но команда <b>" + answer.Action + "</a> неизвестна.<br />Сообщите разработчику для обработки команды.";
                             }
 
                             if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
