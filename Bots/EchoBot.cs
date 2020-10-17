@@ -71,7 +71,7 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Требуемую информацию можно скачать по ссылке <a href=\"" + url + "\">_*" + title + "*_</a>";
+                                httpResult.Result = "Требуемую информацию можно скачать по ссылке «<a href=\"" + url + "\">_*" + title + "*_</a>»";
                             }
 
                             if (answer.Action == "LINK")
@@ -79,7 +79,7 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Информацию можно получить по ссылке <a href=\"" + url + "\">_*" + title + "*_</a>";
+                                httpResult.Result = "Информацию можно получить по ссылке «<a href=\"" + url + "\">_*" + title + "*_</a>»";
                             }
 
                             if (answer.Action == "TEXT")
@@ -102,7 +102,7 @@ namespace vNextBot.Bots
 
                             if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
                             {
-                                replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и повторить авторизацию на сервере TFS.";
+                                replyText = "Для продолжения работы требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">_*ссылке*_</a> и повторить авторизацию на сервере TFS.";
                             }
                             else
                             {
@@ -121,7 +121,7 @@ namespace vNextBot.Bots
                             identity.DbUser.team_id = Guid.Parse((string)team.id);
                             db.Update(identity.DbUser);
                             db.SaveChanges();
-                            replyText = "Спасибо, регистрация завершена!<br />Вы в проекте <b>" + identity.DbUser.c_project + "</b> и Ваша команде <b>" + identity.DbUser.c_team + "</b>.";
+                            replyText = "Спасибо, регистрация завершена!<br />Вы в проекте *" + identity.DbUser.c_project + "* и Ваша команде *" + identity.DbUser.c_team + "*.";
                         }
                         else
                         {
@@ -133,7 +133,7 @@ namespace vNextBot.Bots
                 {
                     if (identity.IsActive)
                     {        
-                        replyText = "Для продолжения работы нужно перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a> и выполнить авторизацию.";
+                        replyText = "Для продолжения работы нужно перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">_*ссылке*_</a> и выполнить авторизацию.";
                     } else
                     {
                         Regex regex = new Regex(@"^\d{6}$");
@@ -144,7 +144,7 @@ namespace vNextBot.Bots
                             {
                                 identity.UpdateIdentity(turnContext.Activity);
 
-                                replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
+                                replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">_*ссылке*_</a>.";
                             }
                         } else {
                             replyText = "Здравствуйте! Информация о *" + turnContext.Activity.From.Name + "* отсутствует в базе данных.<br />Для начала регистрации, требуется отправь ключ.";
