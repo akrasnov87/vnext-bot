@@ -17,6 +17,5 @@ namespace vNextBot.Model
         public string c_value { get; set; }
         public int f_type { get; set; }
         public string c_summary { get; set; }
-        public int? f_user { get; set; }
     }
 }

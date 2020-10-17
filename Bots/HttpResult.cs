@@ -16,6 +16,11 @@ namespace vNextBot.Bots
         public string Result { get; set; }
         public HttpStatusCode Status { get; set; }
 
+        public void SetFTS()
+        {
+            Result += "<br />_Ответ найден с помощью полнотекстового поиска_";
+        }
+
         public bool IsAuthorize
         {
             get

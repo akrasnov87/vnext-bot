@@ -33,10 +33,21 @@ namespace vNextBot.Bots
                 {
                     if (identity.DbUser.team_id.HasValue)
                     {
-                        var answer = db.Search(turnContext.Activity.Text);
+                        bool isFTS = false;
+                        var answer = db.Search(turnContext.Activity.Text, 0);
                         if (answer == null)
                         {
-                            replyText = "Нет информации, попробуйте сформулировать запрос иначе.";
+                            answer = db.Search(turnContext.Activity.Text, 1);
+
+                            if(answer != null)
+                            {
+                                isFTS = true;
+                            }
+                        }
+
+                        if (answer == null)
+                        {
+                            replyText = "Поиск ответа не дал результат, попробуйте сформулировать запрос иначе.";
                         }
                         else
                         {
@@ -60,7 +71,7 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Скачать можно по ссылке <a href=\"" + url + "\">" + title + "</a>";
+                                httpResult.Result = "Требуемую информацию можно скачать по ссылке <a href=\"" + url + "\">_*" + title + "*_</a>";
                             }
 
                             if (answer.Action == "LINK")
@@ -68,7 +79,7 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Информацию доступна по ссылке <a href=\"" + url + "\">" + title + "</a>";
+                                httpResult.Result = "Информацию можно получить по ссылке <a href=\"" + url + "\">_*" + title + "*_</a>";
                             }
 
                             if (answer.Action == "TEXT")
@@ -81,7 +92,12 @@ namespace vNextBot.Bots
                             if(httpResult == null)
                             {
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Информация найден, но команда <b>" + answer.Action + "</a> неизвестна.<br />Сообщите разработчику для обработки команды.";
+                                httpResult.Result = "Информация найден, но команда *" + answer.Action + "* неизвестна.<br />Сообщите разработчику для обработки команды.";
+                            }
+
+                            if (isFTS)
+                            {
+                                httpResult.SetFTS();
                             }
 
                             if (httpResult.Status == System.Net.HttpStatusCode.Unauthorized)
@@ -131,7 +147,7 @@ namespace vNextBot.Bots
                                 replyText = "Спасибо! Ключ принят.<br />Теперь нужно выполнить авторизоваться на сервере TFS и для этого требуется перейти по <a href=\"" + setting.c_value + "?token=" + identity.AuthorizeToken + "\">ссылке</a>.";
                             }
                         } else {
-                            replyText = "Здравствуйте! Информация о <b>" + turnContext.Activity.From.Name + "</b> отсутствует в базе данных.<br />Для начала регистрации, требуется отправь ключ.";
+                            replyText = "Здравствуйте! Информация о *" + turnContext.Activity.From.Name + "* отсутствует в базе данных.<br />Для начала регистрации, требуется отправь ключ.";
                         }
                     }
                 }
@@ -143,7 +159,7 @@ namespace vNextBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            var welcomeText = "Приветствую! Я чат-бот команды <b>vNext</b>.<br />Моя основная задача оптимизировать работу с TFS.";
+            var welcomeText = "Приветствую! Я чат-бот команды *vNext*.<br />Моя основная задача оптимизировать работу с TFS.";
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)

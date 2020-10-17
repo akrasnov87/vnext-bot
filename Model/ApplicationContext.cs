@@ -40,7 +40,7 @@ namespace vNextBot.Model
             }
         }
 
-        public dynamic Search(string text)
+        public dynamic Search(string text, int type = 0)
         {
             using (var command = Database.GetDbConnection().CreateCommand())
             {
@@ -49,22 +49,30 @@ namespace vNextBot.Model
                 command.Parameters.Add(new Npgsql.NpgsqlParameter("_c_query", NpgsqlTypes.NpgsqlDbType.Text)
                 { Value = text });
                 command.Parameters.Add(new Npgsql.NpgsqlParameter("_t_type", NpgsqlTypes.NpgsqlDbType.Integer)
-                { Value = 0 });
+                { Value = type });
                 if (command.Connection.State == ConnectionState.Closed)
                     command.Connection.Open();
-                DbDataReader dbDataReader = command.ExecuteReader();
-                if (dbDataReader.HasRows)
+                try
                 {
-                    while (dbDataReader.Read())
+                    using (DbDataReader dbDataReader = command.ExecuteReader())
                     {
-                        var data = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data"));
-                        return new
+                        if (dbDataReader.HasRows)
                         {
-                            Action = dbDataReader.GetString("c_action"),
-                            Url = (string)data.url,
-                            Title = (string)data.title
-                        };
+                            while (dbDataReader.Read())
+                            {
+                                var data = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(dbDataReader.GetString("jb_data"));
+                                return new
+                                {
+                                    Action = dbDataReader.GetString("c_action"),
+                                    Url = (string)data.url,
+                                    Title = (string)data.title
+                                };
+                            }
+                        }
                     }
+                }catch(Exception e)
+                {
+
                 }
                 return null; // "Нет информации по Вашему запрос, попробуйте перестроить и повторить заново.";
             }
