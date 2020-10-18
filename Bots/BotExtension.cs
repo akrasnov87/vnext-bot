@@ -16,6 +16,26 @@ namespace vNextBot.Bots
 {
     public static class BotExtension
     {
+        public static string NameWithOut(this string str)
+        {
+            if(str.IndexOf("@") > 0)
+            {
+                return str.Substring(0, str.IndexOf("@"));
+            }
+
+            return str;
+        }
+
+        public static string GetName(this string str)
+        {
+            if (str.IndexOf("@") > 0)
+            {
+                return str.Substring(str.IndexOf("@") + 1, str.Length - (str.IndexOf("@") + 1));
+            }
+
+            return "";
+        }
+
         public static BotChannelIdentity GetIdentity(this IMessageActivity activity)
         {
             return new BotChannelIdentity(activity);

@@ -34,10 +34,11 @@ namespace vNextBot.Bots
                     if (identity.DbUser.team_id.HasValue)
                     {
                         bool isFTS = false;
-                        var answer = db.Search(turnContext.Activity.Text, 0);
+                        string searchText = turnContext.Activity.Text.NameWithOut();
+                        var answer = db.Search(searchText, 0);
                         if (answer == null)
                         {
-                            answer = db.Search(turnContext.Activity.Text, 1);
+                            answer = db.Search(searchText, 1);
 
                             if(answer != null)
                             {
@@ -55,7 +56,13 @@ namespace vNextBot.Bots
                             // получение информации от TFS
                             if (answer.Action == "TFS_API")
                             {
+                                string name = turnContext.Activity.Text.GetName();
                                 string tfsUrl = urlSetting.c_value + answer.Url;
+                                if (!string.IsNullOrEmpty(name))
+                                {
+                                    tfsUrl = tfsUrl.Replace("@Me", "");
+                                    tfsUrl += "'" + name + "'";
+                                }
                                 httpResult = BotExtension.Get(tfsUrl, identity.TfsToken, "text/plain");
                             }
 
