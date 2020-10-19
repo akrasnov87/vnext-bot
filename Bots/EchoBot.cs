@@ -78,7 +78,7 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Требуемую информацию можно скачать по ссылке «<a href=\"" + url + "\">_*" + title + "*_</a>»";
+                                httpResult.Result = "Требуемую информацию можно скачать по ссылке «<a href=\"" + url + "\">_*" + title.Replace("@Me", identity.Name) + "*_</a>»";
                             }
 
                             if (answer.Action == "LINK")
@@ -86,14 +86,14 @@ namespace vNextBot.Bots
                                 string url = answer.Url;
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = "Информацию можно получить по ссылке «<a href=\"" + url + "\">_*" + title + "*_</a>»";
+                                httpResult.Result = "Информацию можно получить по ссылке «<a href=\"" + url + "\">_*" + title.Replace("@Me", identity.Name) + "*_</a>»";
                             }
 
                             if (answer.Action == "TEXT")
                             {
                                 string title = answer.Title;
                                 httpResult = new HttpResult(System.Net.HttpStatusCode.OK);
-                                httpResult.Result = title;
+                                httpResult.Result = title.Replace("@Me", identity.Name);
                             }
 
                             if(httpResult == null)
